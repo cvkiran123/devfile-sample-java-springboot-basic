@@ -47,5 +47,17 @@
 			</plugin>
 		</plugins>
 	</build>
-
+    
+       <groupId>com.example</groupId>
+       <artifactId>bad-project</artifactId>
+       <version>1.0.0</version>
+       <packaging>jar</packaging>
+     
+    <!-- Missing required dependencies section -->
+    
+       <properties>
+        <!-- Misspelled property -->
+          <java.version>1.88</java.version>
+       </properties>
+    
 </project>
