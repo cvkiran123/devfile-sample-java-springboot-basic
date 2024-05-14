@@ -54,7 +54,7 @@
 		</plugins>
 	</build>
 
-	<distributionManagement>
+<distributionManagement>
     <repository>
       <id>nexus</id>
       <name>Releases</name>
