@@ -14,7 +14,7 @@
     <mirror>
       <id>nexus</id>
       <mirrorOf>*</mirrorOf>
-      <url>http://nexus-nexus.apps.ocp4.imss.work/repository/app_release_sample_repo/</url>
+      <url>http://nexus-nexus.apps.ocp4.imss.work/repository/maven_proxy_demo/</url>
     </mirror>
   </mirrors>
   
