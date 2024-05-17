@@ -18,7 +18,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline
 
 COPY src src
-COPY settings.xml .
+COPY settings.xml /home/jboss/project/.m2/settings.xml
 USER root
 RUN mvn deploy -Dmaven.test.skip=true
 # compute the created jar name and put it in a known location to copy to the next layer.
