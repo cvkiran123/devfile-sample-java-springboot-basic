@@ -63,7 +63,7 @@
 
      <snapshotRepository>
       <id>nexus</id>
-      <name>Releases</name>
+      <name>Snapshot</name>
       <url>http://nexus-nexus.apps.ocp4.imss.work/repository/app_release_sample_repo/</url>
     </snapshotRepository>
   </distributionManagement>
