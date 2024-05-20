@@ -58,13 +58,13 @@
     <repository>
       <id>nexus</id>
       <name>Releases</name>
-      <url>http://nexus-nexus.apps.ocp4.imss.work:8081/repository/app_release_sample_repo/</url>
+      <url>http://nexus-nexus.apps.ocp4.imss.work/repository/app_release_sample_repo/</url>
     </repository>
 
      <snapshotRepository>
       <id>nexus</id>
       <name>Snapshot</name>
-      <url>http://nexus-nexus.apps.ocp4.imss.work:8081/repository/app_release_sample_repo/</url>
+      <url>http://nexus-nexus.apps.ocp4.imss.work/repository/app_release_sample_repo/</url>
     </snapshotRepository>
   </distributionManagement>
     
