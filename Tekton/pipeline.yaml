@@ -1,0 +1,149 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  creationTimestamp: '2024-04-18T11:29:57Z'
+  generation: 23
+  managedFields:
+    - apiVersion: tekton.dev/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:finally': {}
+          'f:params': {}
+          'f:resources': {}
+          'f:tasks': {}
+          'f:workspaces': {}
+      manager: Mozilla
+      operation: Update
+      time: '2024-05-24T04:54:19Z'
+  name: sample-java-springboot-basic-pipeline
+  namespace: kirancv
+  resourceVersion: '160904610'
+  uid: 1f147fc0-70b6-4f8a-b694-40c633b8dafb
+spec:
+  finally:
+    - name: openshift-client-1-14-0
+      params:
+        - name: SCRIPT
+          value: |-
+            oc create deployment sample-java-springboot-basic-pipeline \
+            --image $(tasks.build-push-image.results.IMAGE_URL)
+        - name: VERSION
+          value: latest
+      taskRef:
+        kind: ClusterTask
+        name: openshift-client-1-14-0
+      workspaces:
+        - name: manifest-dir
+          workspace: sample-java-springboot-basic-workspace
+        - name: kubeconfig-dir
+          workspace: sample-java-springboot-basic-workspace
+  tasks:
+    - name: build-push-image
+      params:
+        - name: IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/kirancv/sample-java-springboot-basic:$(tasks.git-clone-repo.results.commit)
+        - name: DOCKERFILE
+          value: ./docker/Dockerfile
+        - name: CONTEXT
+          value: ./
+        - name: EXTRA_ARGS
+          value: []
+        - name: BUILDER_IMAGE
+          value: >-
+            gcr.io/kaniko-project/executor:v1.5.1@sha256:c6166717f7fe0b7da44908c986137ecfeab21f31ec3992f6e128fff8a94be8a5
+      runAfter:
+        - sonarqube-project-status
+      taskRef:
+        kind: Task
+        name: kaniko
+      workspaces:
+        - name: source
+          workspace: sample-java-springboot-basic-workspace
+        - name: dockerconfig
+          workspace: sample-java-springboot-basic-workspace
+    - name: git-clone-repo
+      params:
+        - name: url
+          value: 'https://github.com/cvkiran123/devfile-sample-java-springboot-basic'
+        - name: revision
+          value: main
+        - name: refspec
+          value: ''
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: crtFileName
+          value: ca-bundle.crt
+        - name: subdirectory
+          value: ''
+        - name: sparseCheckoutDirectories
+          value: ''
+        - name: deleteExisting
+          value: 'true'
+        - name: httpProxy
+          value: ''
+        - name: httpsProxy
+          value: ''
+        - name: noProxy
+          value: ''
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:66f219b4d54a41b945cb5715ecd1fbb5d25431cf8dad4b06914a4cdc65b298cc
+        - name: userHome
+          value: /home/git
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: sample-java-springboot-basic-workspace
+    - name: sonarqube-scanner
+      params:
+        - name: SONAR_HOST_URL
+          value: ''
+        - name: SONAR_PROJECT_KEY
+          value: ''
+        - name: PROJECT_VERSION
+          value: '1.0'
+        - name: SOURCE_TO_SCAN
+          value: .
+        - name: SONAR_ORGANIZATION
+          value: ''
+        - name: SONAR_SCANNER_IMAGE
+          value: >-
+            docker.io/sonarsource/sonar-scanner-cli:4.6@sha256:7a976330a8bad1beca6584c1c118e946e7a25fdc5b664d5c0a869a6577d81b4f
+        - name: SONAR_LOGIN_KEY
+          value: ''
+        - name: SONAR_PASSWORD_KEY
+          value: ''
+      runAfter:
+        - git-clone-repo
+      taskRef:
+        kind: Task
+        name: sonarqube-scanner
+      workspaces:
+        - name: source
+          workspace: sample-java-springboot-basic-workspace
+    - name: sonarqube-project-status
+      params:
+        - name: sonarToken
+          value: 2fbf93e0d21ed872506716ab539ba62f13455538
+        - name: sonarURL
+          value: 'https://sonarqube-sonarqube.apps.ocp4.imss.work'
+        - name: projectKey
+          value: sample-java-springboot
+      runAfter:
+        - sonarqube-scanner
+      taskRef:
+        kind: Task
+        name: sonarqube-project-status
+  workspaces:
+    - name: sample-java-springboot-basic-workspace
