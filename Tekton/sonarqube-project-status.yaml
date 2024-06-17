@@ -1,0 +1,68 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  creationTimestamp: '2024-04-18T11:39:01Z'
+  generation: 1
+  managedFields:
+    - apiVersion: tekton.dev/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:params': {}
+          'f:results': {}
+          'f:steps': {}
+      manager: Mozilla
+      operation: Update
+      time: '2024-04-18T11:39:01Z'
+  name: sonarqube-project-status
+  namespace: kirancv
+  resourceVersion: '87514283'
+  uid: c5461ae7-c28d-440e-a683-fe1fca5bcebe
+spec:
+  params:
+    - name: sonarToken
+      type: string
+    - name: sonarURL
+      type: string
+    - name: projectKey
+      type: string
+  results:
+    - description: Status of the SonarQube project
+      name: status
+      type: string
+    - description: Project key used in the SonarQube query
+      name: project-key
+      type: string
+  steps:
+    - image: 'quay.io/curl/curl:latest'
+      name: curl
+      resources: {}
+      script: >
+        #!/usr/bin/env sh
+
+        apk add --no-cache jq
+
+        curl -k -u $(params.sonarToken): -L    
+        $(params.sonarURL)/api/qualitygates/project_status?projectKey=$(params.projectKey)
+        > /tmp/sonar_status.json
+
+        cat /tmp/sonar_status.json
+
+        cat /tmp/sonar_status.json | jq -r '.projectStatus.status'
+        >/tekton/results/status.txt
+
+        tee "$(results.status.path)" < /tekton/results/status.txt
+
+        STATUS_TEXT=$(cat /tekton/results/status.txt)
+
+        echo $(params.projectKey) > /tekton/results/project_key.txt
+
+        tee "$(results.project-key.path)" < /tekton/results/project_key.txt
+
+        if [[ "${STATUS_TEXT}" != "OK" ]];  then
+          echo ${STATUS_TEXT}  "Stopping pipeline!!!. Check Sonarqube dashboard for further information."
+          exit 1
+        fi
+      securityContext:
+        runAsUser: 0
