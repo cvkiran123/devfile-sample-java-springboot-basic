@@ -2,23 +2,9 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   creationTimestamp: '2024-04-18T11:39:01Z'
-  generation: 1
-  managedFields:
-    - apiVersion: tekton.dev/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:spec':
-          .: {}
-          'f:params': {}
-          'f:results': {}
-          'f:steps': {}
-      manager: Mozilla
-      operation: Update
-      time: '2024-04-18T11:39:01Z'
+  generation:
   name: sonarqube-project-status
   namespace: kirancv
-  resourceVersion: '87514283'
-  uid: c5461ae7-c28d-440e-a683-fe1fca5bcebe
 spec:
   params:
     - name: sonarToken
