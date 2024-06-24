@@ -1,8 +1,6 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  creationTimestamp: '2024-04-18T11:39:01Z'
-  generation:
   name: sonarqube-project-status
   namespace: kirancv
 spec:
